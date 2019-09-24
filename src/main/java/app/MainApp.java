@@ -1,5 +1,6 @@
 package app;
 
+import org.slf4j.LoggerFactory;
 import view.MainWindow;
 
 import javax.swing.*;
@@ -22,7 +23,7 @@ public class MainApp {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-            e.printStackTrace();
+            LoggerFactory.getLogger(MainApp.class).error("", e);
         }
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {

@@ -2,7 +2,13 @@ package domain;
 
 import javax.swing.*;
 
+/**
+ * 迷宫视图按钮组
+ */
 public class MazeViewButtons {
+    /**
+     * 二维按钮
+     */
     private JButton[][] buttons;
 
     public JButton[][] getButtons() {
@@ -13,6 +19,12 @@ public class MazeViewButtons {
         this.buttons = buttons;
     }
 
+    /**
+     * 查找指定按钮在按钮组的位置
+     *
+     * @param button 按钮
+     * @return 按钮的位置
+     */
     public Point findLocationFromButtons(JButton button) {
         if (button == null || buttons == null) {
             return null;

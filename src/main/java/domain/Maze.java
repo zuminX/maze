@@ -1,36 +1,73 @@
 package domain;
 
+/**
+ * 迷宫对象
+ */
 public class Maze {
-    private Integer[][] mazeOriginalData;
-    private Integer[][] mazeStepData;
+    /**
+     * 迷宫原始数据
+     */
+    private int[][] mazeOriginalData;
+    /**
+     * 迷宫步数数据
+     */
+    private int[][] mazeStepData;
+    /**
+     * 组成迷宫路径的点
+     */
     private Point[] mazePathPoints;
+    /**
+     * 迷宫文件路径
+     */
     private String mazeFilePath;
-    private Integer mazeRow;
-    private Integer mazeColumn;
+    /**
+     * 迷宫的行
+     */
+    private int mazeRow;
+    /**
+     * 迷宫的列
+     */
+    private int mazeColumn;
+    /**
+     * 迷宫的起点
+     */
     private Point start;
+    /**
+     * 迷宫的终点
+     */
     private Point end;
 
+    /**
+     * Maze的无参构造方法
+     */
     public Maze() {
         mazeFilePath = Maze.class.getResource("/mazeData.maze").getPath();
     }
 
-    public boolean isWall(Integer row, Integer column) {
-        return mazeOriginalData[row][column] == null || mazeOriginalData[row][column] == -1;
+    /**
+     * 判断此位置是否为墙
+     *
+     * @param row    行
+     * @param column 列
+     * @return 是墙->true 不是墙->false
+     */
+    public boolean isWall(int row, int column) {
+        return mazeOriginalData[row][column] == -1;
     }
 
-    public Integer[][] getMazeOriginalData() {
+    public int[][] getMazeOriginalData() {
         return mazeOriginalData;
     }
 
-    public void setMazeOriginalData(Integer[][] mazeOriginalData) {
+    public void setMazeOriginalData(int[][] mazeOriginalData) {
         this.mazeOriginalData = mazeOriginalData;
     }
 
-    public Integer[][] getMazeStepData() {
+    public int[][] getMazeStepData() {
         return mazeStepData;
     }
 
-    public void setMazeStepData(Integer[][] mazeStepData) {
+    public void setMazeStepData(int[][] mazeStepData) {
         this.mazeStepData = mazeStepData;
     }
 
@@ -50,19 +87,19 @@ public class Maze {
         this.mazeFilePath = mazeFilePath;
     }
 
-    public Integer getMazeRow() {
+    public int getMazeRow() {
         return mazeRow;
     }
 
-    public void setMazeRow(Integer mazeRow) {
+    public void setMazeRow(int mazeRow) {
         this.mazeRow = mazeRow;
     }
 
-    public Integer getMazeColumn() {
+    public int getMazeColumn() {
         return mazeColumn;
     }
 
-    public void setMazeColumn(Integer mazeColumn) {
+    public void setMazeColumn(int mazeColumn) {
         this.mazeColumn = mazeColumn;
     }
 

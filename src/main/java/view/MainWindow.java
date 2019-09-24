@@ -24,9 +24,12 @@ import java.io.File;
 public class MainWindow extends JFrame {
 
     /**
-     * 控制层对象
+     * 迷宫控制层对象
      */
     private MazeController mazeController = new MazeControllerImpl();
+    /**
+     * 视图控制层对象
+     */
     private ViewController viewController = new ViewControllerImpl();
 
     /**
@@ -39,7 +42,13 @@ public class MainWindow extends JFrame {
      */
     private MazeViewButtons mazeViewButtons = new MazeViewButtons();
 
+    /**
+     * 按钮监听器
+     */
     private ButtonActionListener buttonActionListener = new ButtonActionListener();
+    /**
+     * 迷宫面板
+     */
     private JPanel mazePanel;
 
     /**
@@ -68,7 +77,7 @@ public class MainWindow extends JFrame {
     /**
      * 监听打开迷宫文件的菜单项目
      * 传递迷宫文件路径给viewController对象
-     *
+     * <p>
      * 接受返回的异常信息
      * 若存在异常信息，则将异常信息交给viewController进行显示
      *
@@ -84,11 +93,11 @@ public class MainWindow extends JFrame {
     /**
      * 监听加载迷宫数据的菜单项目
      * 若不能懒加载，则读取文件数据重新初始化
-     *
+     * <p>
      * 接受返回的异常信息
      * 若存在异常信息，则将异常信息交给viewController进行显示
      *
-     * @param e
+     * @param e 事件
      */
     private void loadingMazeDataActionPerformed(ActionEvent e) {
         if (!cleanData()) {
@@ -128,11 +137,11 @@ public class MainWindow extends JFrame {
      * 监听寻找迷宫路径的菜单项目
      * 传递迷宫对象给viewController对象，计算出迷宫路径
      * 调用viewController对象进行动态路径显示
-     *
+     * <p>
      * 接受返回的异常信息
      * 若存在异常信息，则将异常信息交给viewController进行显示
      *
-     * @param e
+     * @param e 事件
      */
     private void findMazeMinPathActionPerformed(ActionEvent e) {
         final String err = mazeController.getPathData(maze);
@@ -148,11 +157,11 @@ public class MainWindow extends JFrame {
 
     /**
      * 监听改变按钮的起、终点的位置的事件
-     *
+     * <p>
      * 接受返回的异常信息
      * 若存在异常信息，则将异常信息交给viewController进行显示
      *
-     * @param e
+     * @param e 事件
      */
     private void changeStartAndEndPointActionPerformed(ActionEvent e) {
         final String err = viewController.changeStartAndEndPoint(mazeViewButtons, maze, e.getSource());
@@ -232,10 +241,18 @@ public class MainWindow extends JFrame {
         return false;
     }
 
+    /**
+     * 显示帮助信息
+     *
+     * @param e 事件
+     */
     private void helpTipsPerformed(ActionEvent e) {
         viewController.showHelpInformation();
     }
 
+    /**
+     * 初始化面板
+     */
     private void initComponents() {
         JMenuBar menuBar1 = new JMenuBar();
         JMenu menu1 = new JMenu();
@@ -346,23 +363,47 @@ public class MainWindow extends JFrame {
         setSize(280, 350);
         setLocationRelativeTo(null);
 
+        //开启间隔1s的定时任务
         new Timer(1000, new TimerListener()).start();
     }
 
+    /**
+     * 按钮事件的监听器
+     */
     private class ButtonActionListener implements ActionListener {
+
+        /**
+         * 若点击按钮，则执行改变起、终点的函数
+         *
+         * @param e 事件
+         */
         @Override
         public void actionPerformed(ActionEvent e) {
             changeStartAndEndPointActionPerformed(e);
         }
     }
 
+    /**
+     * 定时任务监听器
+     */
     private class TimerListener implements ActionListener {
+
+        /**
+         * 初始按钮大小
+         */
         private Dimension dimension = new Dimension(50, 50);
 
+        /**
+         * 监听按钮大小变化
+         *
+         * @param e 事件
+         */
         @Override
         public void actionPerformed(ActionEvent e) {
             final JButton[][] buttons = mazeViewButtons.getButtons();
+            //若按钮组不为空且按钮的大小与初始化小不符
             if (buttons != null && !buttons[0][0].getSize().equals(dimension)) {
+                //刷新按钮图片
                 viewController.loadButtonsIcon(mazeViewButtons);
                 dimension = buttons[0][0].getSize();
             }

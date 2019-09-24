@@ -1,30 +1,43 @@
 package utils;
 
 import domain.Maze;
-import org.jetbrains.annotations.NotNull;
 
+/**
+ * 懒加载
+ */
 public class LazyLoad {
+    /**
+     * 文件路径
+     */
     private String filePath;
-    private Long fileChangeTime;
+    /**
+     * 文件修改时间
+     */
+    private long fileChangeTime;
 
-    public Boolean canLazyLoad(@NotNull String nowFilePath, @NotNull Long nowFileChangeTime) {
+    /**
+     * 若文件未改变，则可以进行懒加载
+     *
+     * @param nowFilePath       当前文件位置
+     * @param nowFileChangeTime 当前文件的修改时间
+     * @return 文件未改变->true 文件改变->false
+     */
+    public boolean canLazyLoad(String nowFilePath, Long nowFileChangeTime) {
         return nowFilePath.equals(filePath) && nowFileChangeTime.equals(fileChangeTime);
     }
 
-    public Boolean hasFindMazePath(@NotNull Maze maze) {
-       return maze.getMazePathPoints()!=null;
-    }
-
-    public String getFilePath() {
-        return filePath;
+    /**
+     * 判断当前迷宫是否进行过搜索
+     *
+     * @param maze 迷宫对象
+     * @return 进行迷宫最短路径的搜索->true 未进行->false
+     */
+    public boolean hasFindMazePath(Maze maze) {
+        return maze.getMazePathPoints() != null;
     }
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
-    }
-
-    public Long getFileChangeTime() {
-        return fileChangeTime;
     }
 
     public void setFileChangeTime(Long fileChangeTime) {

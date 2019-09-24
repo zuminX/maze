@@ -1,9 +1,18 @@
 package dao;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
+/**
+ * dao层的接口
+ * 读取数据
+ */
 public interface MazeDao {
-    Integer[][] getMazeData(BufferedReader br) throws Exception;
+    /**
+     * 读取迷宫文件
+     *
+     * @param br 带缓冲的字符输入流
+     * @return 迷宫文件数据
+     * @throws Exception
+     */
+    int[][] getMazeData(BufferedReader br) throws Exception;
 }
