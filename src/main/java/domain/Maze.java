@@ -1,6 +1,5 @@
 package domain;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -55,6 +54,7 @@ public class Maze {
      *
      * @param row    行
      * @param column 列
+     *
      * @return 是墙->true 不是墙->false
      */
     public boolean isWall(int row, int column) {

@@ -19,16 +19,11 @@ import java.awt.*;
  * 接受service返回的数据并返回给视图层
  */
 @Controller("mazeController")
+@SuppressWarnings("all")
 public class MazeControllerImpl implements MazeController {
-    /**
-     * ViewService对象
-     */
     @Autowired
     private ViewService viewService;
 
-    /**
-     * MazeService对象
-     */
     @Autowired
     private MazeService mazeService;
 
@@ -36,38 +31,31 @@ public class MazeControllerImpl implements MazeController {
      * 获得迷宫的路径数据
      *
      * @param maze 迷宫对象
+     *
      * @return 有异常->true 无异常->false
      */
     @Override
     public boolean getPathData(Maze maze) {
-        final String err = mazeService.getPath(maze);
-        if (err != null) {
-            viewService.showErrorInformation(err);
-            return true;
-        }
-        return false;
+        return mazeService.getPath(maze);
     }
 
     /**
      * 获得迷宫的原始数据
      *
      * @param maze 迷宫对象
+     *
      * @return 有异常->true 无异常->false
      */
     @Override
     public boolean getMazeOriginalData(Maze maze) {
-        final String err = mazeService.getMazeOriginalData(maze);
-        if (err != null) {
-            viewService.showErrorInformation(err);
-            return true;
-        }
-        return false;
+        return mazeService.getMazeOriginalData(maze);
     }
 
     /**
      * 创建迷宫按钮组
      *
      * @param maze 迷宫对象
+     *
      * @return 迷宫按钮组
      */
     @Override
@@ -81,16 +69,11 @@ public class MazeControllerImpl implements MazeController {
      * @param mazeViewButtons 迷宫按钮组
      * @param maze            迷宫对象
      * @param source          按钮源
-     * @return 有异常->true 无异常->false
+     *
      */
     @Override
-    public boolean changeStartAndEndPoint(MazeViewButtons mazeViewButtons, Maze maze, Object source) {
-        final String err = viewService.changeStartAndEndPoint(mazeViewButtons, maze, (JButton) source);
-        if (err != null) {
-            viewService.showErrorInformation(err);
-            return true;
-        }
-        return false;
+    public void changeStartAndEndPoint(MazeViewButtons mazeViewButtons, Maze maze, Object source) {
+        viewService.changeStartAndEndPoint(mazeViewButtons, maze, (JButton) source);
     }
 
     /**
@@ -125,11 +108,6 @@ public class MazeControllerImpl implements MazeController {
         viewService.changeFileLocation(maze);
     }
 
-    @Override
-    public void showErrorInformation(String err) {
-        viewService.showErrorInformation(err);
-    }
-
     /**
      * 显示帮助信息
      */
@@ -142,16 +120,11 @@ public class MazeControllerImpl implements MazeController {
      * 打开迷宫文件
      *
      * @param filePath 文件路径
-     * @return 有异常->true 无异常->false
+     *
      */
     @Override
-    public boolean openMazeFile(String filePath) {
-        final String err = viewService.openMazeFile(filePath);
-        if (err != null) {
-            viewService.showErrorInformation(err);
-            return true;
-        }
-        return false;
+    public void openMazeFile(String filePath) {
+        viewService.openMazeFile(filePath);
     }
 
     /**

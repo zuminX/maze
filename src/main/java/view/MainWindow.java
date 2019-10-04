@@ -72,7 +72,6 @@ public class MainWindow extends JFrame {
     /**
      * 监听更改迷宫文件位置的菜单项目
      * 传递迷宫对象给viewController对象
-     *
      */
     private void changeFileLocationActionPerformed() {
         mazeController.changeFileLocation(maze);
@@ -81,7 +80,6 @@ public class MainWindow extends JFrame {
     /**
      * 监听打开迷宫文件的菜单项目
      * 传递迷宫文件路径给viewController对象
-     *
      */
     private void openMazeFileActionPerformed() {
         mazeController.openMazeFile(maze.getMazeFilePath());
@@ -90,7 +88,6 @@ public class MainWindow extends JFrame {
     /**
      * 监听加载迷宫数据的菜单项目
      * 若不能跳过加载，则读取文件数据重新初始化
-     *
      */
     private void loadingMazeDataActionPerformed() {
         if (!cleanData()) {
@@ -126,7 +123,6 @@ public class MainWindow extends JFrame {
      * 监听寻找迷宫路径的菜单项目
      * 传递迷宫对象给viewController对象，计算出迷宫路径
      * 调用viewController对象进行动态路径显示
-     *
      */
     private void findMazeMinPathActionPerformed() {
         if (mazeController.getPathData(maze)) {
@@ -188,7 +184,7 @@ public class MainWindow extends JFrame {
      *
      * @return true->可以跳过加载 false->不可跳过加载
      */
-    private Boolean cleanData() {
+    private boolean cleanData() {
         //获取当前迷宫文件的位置和修改时间
         final String nowMazeFilePath = maze.getMazeFilePath();
         final long nowFileChangeTime = new File(nowMazeFilePath).lastModified();
@@ -219,7 +215,6 @@ public class MainWindow extends JFrame {
 
     /**
      * 显示帮助信息
-     *
      */
     private void helpTipsPerformed() {
         mazeController.showHelpInformation();
@@ -322,10 +317,10 @@ public class MainWindow extends JFrame {
      * 按钮事件的监听器
      */
     @Component
-    public class ButtonActionListener implements ActionListener, Serializable {
+    public class ButtonActionListener implements ActionListener {
 
         /**
-         * 若点击按钮，则执行改变起、终点的函数
+         * 若点击按钮，则执行改变起、终点的方法
          *
          * @param e 事件
          */

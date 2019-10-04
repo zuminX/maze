@@ -1,17 +1,14 @@
 package service.impl;
 
 import dao.MazeDao;
-import dao.impl.MazeDaoImpl;
 import domain.Maze;
 import domain.Point;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import service.MazeService;
 import utils.BaseHolder;
 import utils.DirPoints;
+import utils.Information;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -33,15 +30,8 @@ import static utils.PublicUtils.stackToArray;
  * 返回数据给controller层
  */
 @Service("mazeService")
+@SuppressWarnings("all")
 public class MazeServiceImpl implements MazeService {
-    /**
-     * 日志对象
-     */
-    private static final Logger LOGGER = LoggerFactory.getLogger(MazeServiceImpl.class);
-
-    /**
-     * dao层对象
-     */
     @Autowired
     private MazeDao mazeDao;
 
@@ -51,25 +41,24 @@ public class MazeServiceImpl implements MazeService {
      * 为迷宫对象增加组成最短路径所有点的数据
      *
      * @param maze 迷宫对象
-     * @return 异常信息
+     *
+     * @return 有异常->true 无异常->false
      */
     @Override
-    public String getPath(Maze maze) {
+    public boolean getPath(Maze maze) {
         final Point start = maze.getStart();
         final Point end = maze.getEnd();
+        //确保存在起点和终点
         if (start == null || end == null) {
-            return "缺少该迷宫的起点和终点";
+            throw new RuntimeException(Information.missingStartAndEndPoints);
         }
 
-        //若有异常信息，则返回异常信息到控制层
-        String err = getPathData(maze);
-        if (err != null) {
-            return err;
-        }
+        //获取路径数据
+        getPathData(maze);
 
         //若终点无步数数据，则该迷宫无法走出
         if (getPointValueByMaze(end, maze.getMazeStepData()) < 1) {
-            return "该迷宫无法走出";
+            throw new RuntimeException(Information.canTGetOut);
         }
 
         //在栈中存储迷宫路线的点
@@ -105,8 +94,7 @@ public class MazeServiceImpl implements MazeService {
         //将栈中数据转为数组返回
         Point[] points = stackToArray(Point.class, stack);
         maze.setMazePathPoints(points);
-
-        return null;
+        return false;
     }
 
     /**
@@ -115,20 +103,16 @@ public class MazeServiceImpl implements MazeService {
      * 为迷宫对象增加从起点到尝试点步数的数据
      *
      * @param maze 迷宫对象
-     * @return 异常信息
      */
-    private String getPathData(Maze maze) {
+    private void getPathData(Maze maze) {
         //确保迷宫原始数据存在
         if (maze.getMazeOriginalData() == null) {
-            final String err = getMazeOriginalData(maze);
-            if (err != null) {
-                return err;
-            }
+            getMazeOriginalData(maze);
         }
 
         //确保迷宫有起、终点
         if (maze.getStart() == null || maze.getEnd() == null) {
-            return "缺少起点与终点的数据";
+            throw new RuntimeException(Information.missingStartAndEndPoints);
         }
 
         final int[][] mazeData = maze.getMazeOriginalData();
@@ -176,8 +160,6 @@ public class MazeServiceImpl implements MazeService {
         }
         //设置迷宫经过广度优先搜索的步数数据
         maze.setMazeStepData(stepData);
-
-        return null;
     }
 
     /**
@@ -185,15 +167,16 @@ public class MazeServiceImpl implements MazeService {
      * 为迷宫对象增加迷宫文件原始数据
      *
      * @param maze 迷宫对象
-     * @return 异常信息
+     *
+     * @return 有异常->true 无异常->false
      */
     @Override
-    public String getMazeOriginalData(Maze maze) {
+    public boolean getMazeOriginalData(Maze maze) {
         int[][] mazeOriginalData;
 
         //如果迷宫的文件为空，则设置默认的文件位置
         if (maze.getMazeFilePath() == null) {
-            maze.setMazeFilePath(MazeDaoImpl.class.getResource("/mazeData.maze").getPath());
+            maze.setMazeFilePath(MazeServiceImpl.class.getResource("/mazeData.maze").getPath());
         }
 
         //调用dao层获取迷宫文件数据
@@ -202,47 +185,42 @@ public class MazeServiceImpl implements MazeService {
              var br = new BufferedReader(isr)) {
             mazeOriginalData = mazeDao.getMazeData(br);
         } catch (Exception e) {
-            LOGGER.error("", e);
-            return "读取迷宫文件错误";
+            throw new RuntimeException(Information.readingMazeFileError);
         }
 
+        //确保读取到迷宫文件存在数据
         if (mazeOriginalData == null) {
-            return "迷宫文件为空";
+            throw new RuntimeException(Information.mazeFileIsEmpty);
         }
 
         //检测迷宫数据的合法性
-        String err = checkMazeDataValidity(mazeOriginalData);
-        if (err != null) {
-            return err;
-        }
+        checkMazeDataValidity(mazeOriginalData);
 
-        //设置迷宫数据
+        //设置迷宫对象的数据
         maze.setMazeOriginalData(mazeOriginalData);
         maze.setMazeRow(mazeOriginalData.length);
         maze.setMazeColumn(mazeOriginalData[0].length);
-
-        return null;
+        return false;
     }
 
     /**
      * 检测迷宫原始数据的合法性
      *
      * @param mazeOriginalData 迷宫原始数据
-     * @return 异常信息
      */
-    @Nullable
-    private String checkMazeDataValidity(int[][] mazeOriginalData) {
+    private void checkMazeDataValidity(int[][] mazeOriginalData) {
         for (int i = 0, size = mazeOriginalData[0].length; i < mazeOriginalData.length; i++) {
+            //确保迷宫数据是一个矩形
             if (mazeOriginalData[i].length != size) {
-                return "迷宫必须为一个矩形";
+                throw new RuntimeException(Information.mazeSizeError);
             }
             for (int number : mazeOriginalData[i]) {
+                //确保数据中只存在0和-1
                 if (number != 0 && number != -1) {
-                    return "迷宫文件中只能有代表路的0和代表墙的-1，其他内容均为非法";
+                    throw new RuntimeException(Information.mazeDataError);
                 }
             }
         }
-        return null;
     }
 
     /**
@@ -250,6 +228,7 @@ public class MazeServiceImpl implements MazeService {
      *
      * @param point 点
      * @param grid  迷宫数据
+     *
      * @return 成功->迷宫数据对应位置的值；失败->null
      */
     private Integer getPointValueByMaze(Point point, int[][] grid) {

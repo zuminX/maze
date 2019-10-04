@@ -4,7 +4,7 @@ import domain.Maze;
 import org.springframework.stereotype.Component;
 
 /**
- * 跳过加载
+ * 跳过加载的类
  */
 @Component
 public class SkipLoad {

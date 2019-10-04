@@ -46,6 +46,7 @@ public class Point {
      * 进行当前点与给定点的加法运算
      *
      * @param point 被加点
+     *
      * @return 加法运算后的点
      */
     public Point add(Point point) {

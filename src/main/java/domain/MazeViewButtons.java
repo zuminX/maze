@@ -28,6 +28,7 @@ public class MazeViewButtons {
      * 查找指定按钮在按钮组的位置
      *
      * @param button 按钮
+     *
      * @return 按钮的位置
      */
     public Point findLocationFromButtons(JButton button) {

@@ -19,6 +19,7 @@ public interface MazeController {
      * 获得迷宫的路径数据
      *
      * @param maze 迷宫对象
+     *
      * @return 有异常->true 无异常->false
      */
     boolean getPathData(Maze maze);
@@ -27,6 +28,7 @@ public interface MazeController {
      * 获得迷宫的原始数据
      *
      * @param maze 迷宫对象
+     *
      * @return 有异常->true 无异常->false
      */
     boolean getMazeOriginalData(Maze maze);
@@ -35,6 +37,7 @@ public interface MazeController {
      * 创建迷宫按钮组
      *
      * @param maze 迷宫对象
+     *
      * @return 迷宫按钮组
      */
     MazeViewButtons newMazeViewButtons(Maze maze);
@@ -45,9 +48,8 @@ public interface MazeController {
      * @param mazeViewButtons 迷宫按钮组
      * @param maze            迷宫对象
      * @param source          按钮源
-     * @return 有异常->true 无异常->false
      */
-    boolean changeStartAndEndPoint(MazeViewButtons mazeViewButtons, Maze maze, Object source);
+    void changeStartAndEndPoint(MazeViewButtons mazeViewButtons, Maze maze, Object source);
 
     /**
      * 动态显示迷宫路径
@@ -73,19 +75,11 @@ public interface MazeController {
     void changeFileLocation(Maze maze);
 
     /**
-     * 显示错误信息
-     *
-     * @param err 错误信息
-     */
-    void showErrorInformation(String err);
-
-    /**
      * 打开迷宫文件
      *
      * @param filePath 文件路径
-     * @return 有异常->true 无异常->false
      */
-    boolean openMazeFile(String filePath);
+    void openMazeFile(String filePath);
 
     /**
      * 显示帮助信息

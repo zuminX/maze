@@ -17,6 +17,7 @@ public interface ViewService {
      * 创建迷宫按钮组
      *
      * @param maze 迷宫对象
+     *
      * @return 迷宫按钮组
      */
     MazeViewButtons newMazeViewButtons(Maze maze);
@@ -27,9 +28,8 @@ public interface ViewService {
      * @param mazeViewButtons 迷宫按钮组
      * @param maze            迷宫对象
      * @param button          按钮
-     * @return 异常信息
      */
-    String changeStartAndEndPoint(MazeViewButtons mazeViewButtons, Maze maze, JButton button);
+    void changeStartAndEndPoint(MazeViewButtons mazeViewButtons, Maze maze, JButton button);
 
     /**
      * 动态显示迷宫路径
@@ -65,9 +65,8 @@ public interface ViewService {
      * 打开迷宫文件
      *
      * @param filePath 文件路径
-     * @return 异常信息
      */
-    String openMazeFile(String filePath);
+    void openMazeFile(String filePath);
 
     /**
      * 加载按钮的图片

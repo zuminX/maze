@@ -3,13 +3,12 @@ package service.impl;
 import domain.Maze;
 import domain.MazeViewButtons;
 import domain.Point;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import service.ViewService;
 import utils.BaseHolder;
+import utils.Information;
 import view.MainWindow;
 
 import javax.imageio.ImageIO;
@@ -29,17 +28,6 @@ import java.util.regex.Pattern;
 @Service("viewService")
 @PropertySource(value = "classpath:mazeConfig.properties", encoding = "utf-8")
 public class ViewServiceImpl implements ViewService {
-    /**
-     * 日志对象
-     */
-    private static final Logger LOGGER = LoggerFactory.getLogger(ViewServiceImpl.class);
-
-    /**
-     * 帮助信息
-     */
-    @Value("${information.help}")
-    private String helpInformation;
-
     /**
      * 文件的后缀必须为.maze
      */
@@ -91,13 +79,12 @@ public class ViewServiceImpl implements ViewService {
      * @param maze            迷宫对象
      * @param button          按钮
      *
-     * @return 异常信息
      */
     @Override
-    public String changeStartAndEndPoint(MazeViewButtons mazeViewButtons, Maze maze, JButton button) {
+    public void changeStartAndEndPoint(MazeViewButtons mazeViewButtons, Maze maze, JButton button) {
         //确保数据不为空
         if (maze == null || mazeViewButtons == null) {
-            return "未加载迷宫数据";
+            throw new RuntimeException(Information.missingMazeData);
         }
         //寻找该点在迷宫按钮组的位置
         final Point point = mazeViewButtons.findLocationFromButtons(button);
@@ -105,32 +92,26 @@ public class ViewServiceImpl implements ViewService {
         final Point start = maze.getStart();
         final Point end = maze.getEnd();
 
-        //取消起点
         if (point.equals(start)) {
+            //取消起点
             maze.setStart(null);
             button.setBackground(Color.white);
-            return null;
-        }
-        //取消终点
-        if (point.equals(end)) {
+        } else if (point.equals(end)) {
+            //取消终点
             maze.setEnd(null);
             button.setBackground(Color.white);
-            return null;
-        }
-        //设置起点
-        if (start == null) {
+        } else if (start == null) {
+            //设置起点
             maze.setStart(point);
             button.setBackground(Color.blue);
-            return null;
-        }
-        //设置终点
-        if (end == null) {
+        } else if (end == null) {
+            //设置终点
             maze.setEnd(point);
             button.setBackground(Color.blue);
-            return null;
+        } else {
+            //若为其他情况，则抛出异常
+            throw new RuntimeException(Information.StartAndEndPointsOnlyOne);
         }
-
-        return "迷宫只能设置一个起点和一个终点";
     }
 
     /**
@@ -143,17 +124,15 @@ public class ViewServiceImpl implements ViewService {
     public void displayPathAnimation(MazeViewButtons mazeViewButtons, final Point[] mazePathPoints) {
         final JButton[][] buttons = mazeViewButtons.getButtons();
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                //每隔0.1s显示路径上的一个点
-                for (Point point : mazePathPoints) {
-                    buttons[point.getI()][point.getJ()].setBackground(Color.green);
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        LOGGER.error("", e);
-                    }
+        new Thread(() -> {
+            //每隔0.1s显示路径上的一个点
+            for (Point point : mazePathPoints) {
+                buttons[point.getI()][point.getJ()].setBackground(Color.green);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    //异常中断时，抛出异常
+                    throw new RuntimeException(Information.showPathError);
                 }
             }
         }).start();
@@ -183,9 +162,10 @@ public class ViewServiceImpl implements ViewService {
         //创建文件选择器
         JFileChooser jFileChooser = new JFileChooser();
         jFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        jFileChooser.showDialog(new JLabel(), "选择后缀名为.maze的迷宫文件");
+        jFileChooser.showDialog(new JLabel(), Information.selectMazeFile);
 
         File file = jFileChooser.getSelectedFile();
+        //没有选择文件，则不执行检验操作
         if (file == null) {
             return;
         }
@@ -197,18 +177,17 @@ public class ViewServiceImpl implements ViewService {
         if (isMatch) {
             maze.setMazeFilePath(path);
         } else {
-            showErrorInformation("迷宫数据必须为后缀名为.maze的文件");
+            //不匹配则抛出异常
+            throw new RuntimeException(Information.selectMazeFileNoMatch);
         }
     }
 
     /**
      * 显示错误信息
-     *
-     * @param err 错误信息
      */
     @Override
     public void showErrorInformation(String err) {
-        JOptionPane.showMessageDialog(null, err, "ERROR", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, err, "错误", JOptionPane.ERROR_MESSAGE);
     }
 
     /**
@@ -216,18 +195,15 @@ public class ViewServiceImpl implements ViewService {
      *
      * @param filePath 文件路径
      *
-     * @return 异常信息
      */
     @Override
-    public String openMazeFile(String filePath) {
+    public void openMazeFile(String filePath) {
         File file = new File(filePath);
         try {
             Desktop.getDesktop().open(file);
         } catch (IOException e) {
-            LOGGER.error("", e);
-            return "迷宫数据文件打开失败";
+            throw new RuntimeException(Information.openMazeFileError);
         }
-        return null;
     }
 
     /**
@@ -243,8 +219,7 @@ public class ViewServiceImpl implements ViewService {
         try {
             image = ImageIO.read(new FileInputStream(getClass().getResource("/wall.png").getPath()));
         } catch (IOException e) {
-            LOGGER.error("", e);
-            showErrorInformation("加载图片失败");
+            throw new RuntimeException(Information.loadingImageError);
         }
 
         //根据按钮的大小设置图片的大小
@@ -264,7 +239,7 @@ public class ViewServiceImpl implements ViewService {
      */
     @Override
     public void showHelpInformation() {
-        JOptionPane.showMessageDialog(null, helpInformation, "帮助", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, Information.mazeHelpInformation, "帮助", JOptionPane.INFORMATION_MESSAGE);
     }
 
     /**

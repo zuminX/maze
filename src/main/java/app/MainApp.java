@@ -16,8 +16,6 @@ import javax.swing.*;
 
 public class MainApp {
 
-    private static ApplicationContext ac;
-
     /**
      * 创建MainWindowSwing窗口进行显示
      *
@@ -31,10 +29,10 @@ public class MainApp {
             LoggerFactory.getLogger(MainApp.class).error("", e);
         }
         //获得核心容器
-        ac = new ClassPathXmlApplicationContext("bean.xml");
+        ApplicationContext ac = new ClassPathXmlApplicationContext("bean.xml");
         //将核心容器存到BaseHolder中
         ac.getBean("baseHolder", BaseHolder.class).setApplicationContext(ac);
-
+        //显示swing窗口
         SwingUtilities.invokeLater(() -> ac.getBean("viewWindow", MainWindow.class).setVisible(true));
     }
 }

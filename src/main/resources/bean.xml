@@ -2,7 +2,8 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd">
     <!--配置注解扫描-->
     <context:component-scan base-package="service"/>
     <context:component-scan base-package="controller"/>
@@ -10,6 +11,10 @@
     <context:component-scan base-package="view"/>
     <context:component-scan base-package="domain"/>
     <context:component-scan base-package="utils"/>
+    <context:component-scan base-package="aspect"/>
+
+    <!--开启注解aop的支持-->
+    <aop:aspectj-autoproxy/>
 
     <!--配置四个方向的点-->
     <bean id="dirPoints" class="utils.DirPoints">
