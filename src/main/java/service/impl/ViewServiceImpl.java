@@ -5,7 +5,11 @@ import domain.MazeViewButtons;
 import domain.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Service;
 import service.ViewService;
+import utils.BaseHolder;
 import view.MainWindow;
 
 import javax.imageio.ImageIO;
@@ -22,7 +26,8 @@ import java.util.regex.Pattern;
  * 接收控制层controller的数据
  * 返回数据给controller层
  */
-
+@Service("viewService")
+@PropertySource(value = "classpath:mazeConfig.properties", encoding = "utf-8")
 public class ViewServiceImpl implements ViewService {
     /**
      * 日志对象
@@ -30,9 +35,22 @@ public class ViewServiceImpl implements ViewService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ViewServiceImpl.class);
 
     /**
+     * 帮助信息
+     */
+    @Value("${information.help}")
+    private String helpInformation;
+
+    /**
+     * 文件的后缀必须为.maze
+     */
+    @Value("${mazePattern}")
+    private String pattern;
+
+    /**
      * 创建迷宫按钮组
      *
      * @param maze 迷宫对象
+     *
      * @return 迷宫按钮组
      */
     @Override
@@ -42,7 +60,7 @@ public class ViewServiceImpl implements ViewService {
             return null;
         }
 
-        MazeViewButtons mazeViewButtons = new MazeViewButtons();
+        MazeViewButtons mazeViewButtons = BaseHolder.getBean("mazeViewButtons", MazeViewButtons.class);
         JButton[][] buttons = new JButton[maze.getMazeRow()][];
 
         for (int i = 0; i < buttons.length; i++) {
@@ -72,6 +90,7 @@ public class ViewServiceImpl implements ViewService {
      * @param mazeViewButtons 迷宫按钮组
      * @param maze            迷宫对象
      * @param button          按钮
+     *
      * @return 异常信息
      */
     @Override
@@ -163,7 +182,7 @@ public class ViewServiceImpl implements ViewService {
     public void changeFileLocation(Maze maze) {
         //创建文件选择器
         JFileChooser jFileChooser = new JFileChooser();
-        jFileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        jFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         jFileChooser.showDialog(new JLabel(), "选择后缀名为.maze的迷宫文件");
 
         File file = jFileChooser.getSelectedFile();
@@ -171,8 +190,7 @@ public class ViewServiceImpl implements ViewService {
             return;
         }
 
-        //文件的后缀必须为.maze
-        final String pattern = ".*\\.maze";
+        //获取绝对路径
         String path = file.getAbsolutePath();
         boolean isMatch = Pattern.matches(pattern, path);
 
@@ -197,6 +215,7 @@ public class ViewServiceImpl implements ViewService {
      * 打开迷宫文件
      *
      * @param filePath 文件路径
+     *
      * @return 异常信息
      */
     @Override
@@ -217,7 +236,6 @@ public class ViewServiceImpl implements ViewService {
      * @param mazeViewButtons 迷宫按钮组
      */
     @Override
-    //TODO 待优化
     public void loadButtonsIcon(MazeViewButtons mazeViewButtons) {
         final JButton[][] buttons = mazeViewButtons.getButtons();
         BufferedImage image = null;
@@ -246,10 +264,7 @@ public class ViewServiceImpl implements ViewService {
      */
     @Override
     public void showHelpInformation() {
-        String information = "1.此程序可以在矩形迷宫寻找从起点到终点的出路;\n" + "2.你可以修改迷宫文件的位置，文件的后缀名必须为.maze且文件必须可读;\n" +
-                             "3.你可以修改迷宫文件的数据，迷宫数据应为一个数字矩形，其中0代表可以无障碍的通路，-1代表不能行走的墙。每个数字必须用空格分开、每行数据必须隔行显示;\n" + "4.点击加载数据将会读取迷宫文件的数据并进行显示;\n" +
-                             "5.你可以点击空路进行设置/取消迷宫起点和终点，然后点击最短路径对迷宫进行路径求解。";
-        JOptionPane.showMessageDialog(null, information, "帮助", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, helpInformation, "帮助", JOptionPane.INFORMATION_MESSAGE);
     }
 
     /**

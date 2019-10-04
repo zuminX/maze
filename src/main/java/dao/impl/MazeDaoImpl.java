@@ -1,6 +1,7 @@
 package dao.impl;
 
 import dao.MazeDao;
+import org.springframework.stereotype.Repository;
 
 import java.io.BufferedReader;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
  * 读取数据
  * 返回给service层
  */
+@Repository("mazeDao")
 public class MazeDaoImpl implements MazeDao {
 
     /**

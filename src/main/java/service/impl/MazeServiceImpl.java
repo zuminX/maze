@@ -7,9 +7,16 @@ import domain.Point;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import service.MazeService;
+import utils.BaseHolder;
+import utils.DirPoints;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -25,6 +32,7 @@ import static utils.PublicUtils.stackToArray;
  * 调用dao层获得数据
  * 返回数据给controller层
  */
+@Service("mazeService")
 public class MazeServiceImpl implements MazeService {
     /**
      * 日志对象
@@ -32,22 +40,10 @@ public class MazeServiceImpl implements MazeService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MazeServiceImpl.class);
 
     /**
-     * 四个方向的点
-     */
-    private static final Point[] dirPoints;
-
-    static {
-        dirPoints = new Point[4];
-        dirPoints[0] = new Point(-1, 0);
-        dirPoints[1] = new Point(0, -1);
-        dirPoints[2] = new Point(1, 0);
-        dirPoints[3] = new Point(0, 1);
-    }
-
-    /**
      * dao层对象
      */
-    private MazeDao mazeDao = new MazeDaoImpl();
+    @Autowired
+    private MazeDao mazeDao;
 
     /**
      * 对进行广度优先搜索后的迷宫数据进行逆向处理
@@ -89,7 +85,7 @@ public class MazeServiceImpl implements MazeService {
             //下个点的值
             Integer valueNext;
             //尝试从四个方向寻找路线
-            for (Point dirPoint : dirPoints) {
+            for (Point dirPoint : BaseHolder.getBean("dirPoints", DirPoints.class).getDirPoints()) {
                 Point nextPoint = currentPoint.add(dirPoint);
                 valueNext = getPointValueByMaze(nextPoint, maze.getMazeStepData());
 
@@ -154,7 +150,7 @@ public class MazeServiceImpl implements MazeService {
             }
 
             //尝试向四个方向移动
-            for (Point dirPoint : dirPoints) {
+            for (Point dirPoint : BaseHolder.getBean("dirPoints", DirPoints.class).getDirPoints()) {
                 Point nextPoint = currentPoint.add(dirPoint);
 
                 value = getPointValueByMaze(nextPoint, mazeData);
@@ -201,8 +197,9 @@ public class MazeServiceImpl implements MazeService {
         }
 
         //调用dao层获取迷宫文件数据
-        try (InputStream is = new FileInputStream(new File(maze.getMazeFilePath()));
-             InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8); BufferedReader br = new BufferedReader(isr)) {
+        try (var is = new FileInputStream(new File(maze.getMazeFilePath()));
+             var isr = new InputStreamReader(is, StandardCharsets.UTF_8);
+             var br = new BufferedReader(isr)) {
             mazeOriginalData = mazeDao.getMazeData(br);
         } catch (Exception e) {
             LOGGER.error("", e);
@@ -214,9 +211,9 @@ public class MazeServiceImpl implements MazeService {
         }
 
         //检测迷宫数据的合法性
-        String x = checkMazeDataValidity(mazeOriginalData);
-        if (x != null) {
-            return x;
+        String err = checkMazeDataValidity(mazeOriginalData);
+        if (err != null) {
+            return err;
         }
 
         //设置迷宫数据
@@ -231,7 +228,7 @@ public class MazeServiceImpl implements MazeService {
      * 检测迷宫原始数据的合法性
      *
      * @param mazeOriginalData 迷宫原始数据
-     * @return  异常信息
+     * @return 异常信息
      */
     @Nullable
     private String checkMazeDataValidity(int[][] mazeOriginalData) {

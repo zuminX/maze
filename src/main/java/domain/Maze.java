@@ -1,8 +1,14 @@
 package domain;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 /**
  * 迷宫对象
  */
+@Component()
+@Scope("prototype")
 public class Maze {
     /**
      * 迷宫原始数据

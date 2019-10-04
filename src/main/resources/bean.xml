@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+    <!--配置注解扫描-->
+    <context:component-scan base-package="service"/>
+    <context:component-scan base-package="controller"/>
+    <context:component-scan base-package="dao"/>
+    <context:component-scan base-package="view"/>
+    <context:component-scan base-package="domain"/>
+    <context:component-scan base-package="utils"/>
+
+    <!--配置四个方向的点-->
+    <bean id="dirPoints" class="utils.DirPoints">
+        <property name="dirPoints">
+            <list>
+                <ref bean="uponPoint"/>
+                <ref bean="leftPoint"/>
+                <ref bean="underPoint"/>
+                <ref bean="rightPoint"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--往上的点-->
+    <bean id="uponPoint" class="domain.Point">
+        <constructor-arg name="i" value="-1"/>
+        <constructor-arg name="j" value="0"/>
+    </bean>
+    <!--往下的点-->
+    <bean id="underPoint" class="domain.Point">
+        <constructor-arg name="i" value="1"/>
+        <constructor-arg name="j" value="0"/>
+    </bean>
+    <!--往左的点-->
+    <bean id="leftPoint" class="domain.Point">
+        <constructor-arg name="i" value="0"/>
+        <constructor-arg name="j" value="-1"/>
+    </bean>
+    <!--往右的点-->
+    <bean id="rightPoint" class="domain.Point">
+        <constructor-arg name="i" value="0"/>
+        <constructor-arg name="j" value="1"/>
+    </bean>
+</beans>

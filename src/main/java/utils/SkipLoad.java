@@ -1,11 +1,13 @@
 package utils;
 
 import domain.Maze;
+import org.springframework.stereotype.Component;
 
 /**
- * 懒加载
+ * 跳过加载
  */
-public class LazyLoad {
+@Component
+public class SkipLoad {
     /**
      * 文件路径
      */
@@ -16,7 +18,7 @@ public class LazyLoad {
     private long fileChangeTime;
 
     /**
-     * 若文件未改变，则可以进行懒加载
+     * 若文件未改变，则可以跳过加载
      *
      * @param nowFilePath       当前文件位置
      * @param nowFileChangeTime 当前文件的修改时间

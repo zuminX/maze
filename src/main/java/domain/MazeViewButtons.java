@@ -1,10 +1,15 @@
 package domain;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import javax.swing.*;
 
 /**
  * 迷宫视图按钮组
  */
+@Component
+@Scope("prototype")
 public class MazeViewButtons {
     /**
      * 二维按钮
