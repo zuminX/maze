@@ -1,19 +1,18 @@
-package view;
+package com.view;
 
-import controller.MazeController;
-import domain.Maze;
-import domain.MazeViewButtons;
+import com.controller.MazeController;
+import com.domain.Maze;
+import com.domain.MazeViewButtons;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import utils.BaseHolder;
-import utils.SkipLoad;
+import com.utils.BaseHolder;
+import com.utils.SkipLoad;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.Serializable;
 
 /**
  * 视图层，进行程序的显示和与用户交互的界面
@@ -67,6 +66,8 @@ public class MainWindow extends JFrame {
      */
     public MainWindow() {
         initComponents();
+        //开启间隔1s的定时任务
+        new Timer(1000, new TimerListener()).start();
     }
 
     /**
@@ -194,10 +195,7 @@ public class MainWindow extends JFrame {
             if (skipLoad.hasFindMazePath(maze)) {
                 //清理迷宫对象与最短路径相关的数据
                 mazeController.removePathAnimation(mazeViewButtons, maze.getMazePathPoints());
-                maze.setStart(null);
-                maze.setEnd(null);
-                maze.setMazeStepData(null);
-                maze.setMazePathPoints(null);
+                maze.cleanData();
                 //将移除的监听器重新进行监听
                 addButtonsActionListener();
             }
@@ -237,7 +235,7 @@ public class MainWindow extends JFrame {
 
         //======== this ========
         setTitle("Maze");
-        setIconImage(new ImageIcon(getClass().getResource("/mazeIcon.png")).getImage());
+        setIconImage(new ImageIcon(getClass().getResource("/image/mazeIcon.png")).getImage());
         Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
 
@@ -308,9 +306,6 @@ public class MainWindow extends JFrame {
         contentPane.add(mazePanel, BorderLayout.CENTER);
         setSize(280, 350);
         setLocationRelativeTo(null);
-
-        //开启间隔1s的定时任务
-        new Timer(1000, new TimerListener()).start();
     }
 
     /**
@@ -333,12 +328,14 @@ public class MainWindow extends JFrame {
     /**
      * 定时任务监听器
      */
+    @Component
     private class TimerListener implements ActionListener {
 
         /**
          * 初始按钮大小
          */
-        private Dimension dimension = new Dimension(50, 50);
+        @Autowired
+        private Dimension dimension;
 
         /**
          * 监听按钮大小变化

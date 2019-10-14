@@ -1,6 +1,6 @@
-package dao.impl;
+package com.dao.impl;
 
-import dao.MazeDao;
+import com.dao.MazeDao;
 import org.springframework.stereotype.Repository;
 
 import java.io.BufferedReader;
@@ -25,10 +25,10 @@ public class MazeDaoImpl implements MazeDao {
      */
     public int[][] getMazeData(BufferedReader br) throws Exception {
         String data;
-        ArrayList<int[]> list = new ArrayList<int[]>();
+        ArrayList<int[]> list = new ArrayList<>();
         //读取迷宫文件的每一行
         while ((data = br.readLine()) != null) {
-            //以空格为分隔符分割数据
+            //以（多个）空格为分隔符分割数据
             String[] rowDataStr = data.split("\\s+");
             int[] rowData = new int[rowDataStr.length];
             for (int i = 0; i < rowData.length; i++) {

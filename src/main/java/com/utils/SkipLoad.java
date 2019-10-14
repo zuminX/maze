@@ -1,6 +1,6 @@
-package utils;
+package com.utils;
 
-import domain.Maze;
+import com.domain.Maze;
 import org.springframework.stereotype.Component;
 
 /**

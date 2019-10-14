@@ -1,10 +1,10 @@
-package app;
+package com.app;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import utils.BaseHolder;
-import view.MainWindow;
+import com.utils.BaseHolder;
+import com.view.MainWindow;
 
 import javax.swing.*;
 
@@ -28,10 +28,12 @@ public class MainApp {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
             LoggerFactory.getLogger(MainApp.class).error("", e);
         }
+
         //获得核心容器
         ApplicationContext ac = new ClassPathXmlApplicationContext("bean.xml");
         //将核心容器存到BaseHolder中
         ac.getBean("baseHolder", BaseHolder.class).setApplicationContext(ac);
+
         //显示swing窗口
         SwingUtilities.invokeLater(() -> ac.getBean("viewWindow", MainWindow.class).setVisible(true));
     }

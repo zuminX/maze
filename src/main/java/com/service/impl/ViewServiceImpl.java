@@ -1,15 +1,16 @@
-package service.impl;
+package com.service.impl;
 
-import domain.Maze;
-import domain.MazeViewButtons;
-import domain.Point;
+import com.domain.Maze;
+import com.domain.MazeViewButtons;
+import com.domain.Point;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
-import service.ViewService;
-import utils.BaseHolder;
-import utils.Information;
-import view.MainWindow;
+import com.service.ViewService;
+import com.utils.BaseHolder;
+import com.utils.Information;
+import com.view.MainWindow;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -26,13 +27,17 @@ import java.util.regex.Pattern;
  * 返回数据给controller层
  */
 @Service("viewService")
-@PropertySource(value = "classpath:mazeConfig.properties", encoding = "utf-8")
+@PropertySource(value = "classpath:properties/mazeConfig.properties", encoding = "utf-8")
+@SuppressWarnings("all")
 public class ViewServiceImpl implements ViewService {
     /**
      * 文件的后缀必须为.maze
      */
     @Value("${mazePattern}")
     private String pattern;
+
+    @Autowired
+    private Dimension dimension;
 
     /**
      * 创建迷宫按钮组
@@ -51,6 +56,7 @@ public class ViewServiceImpl implements ViewService {
         MazeViewButtons mazeViewButtons = BaseHolder.getBean("mazeViewButtons", MazeViewButtons.class);
         JButton[][] buttons = new JButton[maze.getMazeRow()][];
 
+        //创建一个二维数据的点
         for (int i = 0; i < buttons.length; i++) {
             buttons[i] = new JButton[maze.getMazeColumn()];
             for (int j = 0; j < buttons[i].length; j++) {
@@ -64,11 +70,12 @@ public class ViewServiceImpl implements ViewService {
                     buttons[i][j].setBackground(Color.white);
                 }
                 //设置按钮的初始大小
-                buttons[i][j].setSize(50, 50);
+                buttons[i][j].setSize(dimension);
                 buttons[i][j].setBorder(null);
             }
         }
         mazeViewButtons.setButtons(buttons);
+
         return mazeViewButtons;
     }
 
@@ -217,7 +224,7 @@ public class ViewServiceImpl implements ViewService {
         BufferedImage image = null;
         //读取迷宫墙的图片
         try {
-            image = ImageIO.read(new FileInputStream(getClass().getResource("/wall.png").getPath()));
+            image = ImageIO.read(new FileInputStream(getClass().getResource("/image/wall.png").getPath()));
         } catch (IOException e) {
             throw new RuntimeException(Information.loadingImageError);
         }

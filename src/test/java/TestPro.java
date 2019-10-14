@@ -1,5 +1,4 @@
 import org.junit.Test;
-import view.MainWindow;
 
 public class TestPro {
 

@@ -1,14 +1,14 @@
-package controller.impl;
+package com.controller.impl;
 
-import controller.MazeController;
-import domain.Maze;
-import domain.MazeViewButtons;
-import domain.Point;
+import com.controller.MazeController;
+import com.domain.Maze;
+import com.domain.MazeViewButtons;
+import com.domain.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import service.MazeService;
-import service.ViewService;
-import view.MainWindow;
+import com.service.MazeService;
+import com.service.ViewService;
+import com.view.MainWindow;
 
 import javax.swing.*;
 import java.awt.*;

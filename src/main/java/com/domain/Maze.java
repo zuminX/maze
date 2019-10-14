@@ -1,4 +1,4 @@
-package domain;
+package com.domain;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -47,6 +47,16 @@ public class Maze {
      */
     public Maze() {
         mazeFilePath = Maze.class.getResource("/mazeData.maze").getPath();
+    }
+
+    /**
+     * 清除起点、终点，迷宫步骤数据、组成迷宫路径点的数据
+     */
+    public void cleanData() {
+        setStart(null);
+        setEnd(null);
+        setMazeStepData(null);
+        setMazePathPoints(null);
     }
 
     /**

@@ -1,9 +1,9 @@
-package service;
+package com.service;
 
-import domain.Maze;
-import domain.MazeViewButtons;
-import domain.Point;
-import view.MainWindow;
+import com.domain.Maze;
+import com.domain.MazeViewButtons;
+import com.domain.Point;
+import com.view.MainWindow;
 
 import javax.swing.*;
 import java.awt.*;

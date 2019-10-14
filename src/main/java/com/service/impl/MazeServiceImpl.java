@@ -1,14 +1,14 @@
-package service.impl;
+package com.service.impl;
 
-import dao.MazeDao;
-import domain.Maze;
-import domain.Point;
+import com.dao.MazeDao;
+import com.domain.Maze;
+import com.domain.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import service.MazeService;
-import utils.BaseHolder;
-import utils.DirPoints;
-import utils.Information;
+import com.service.MazeService;
+import com.utils.BaseHolder;
+import com.utils.DirPoints;
+import com.utils.Information;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -20,8 +20,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
 
-import static utils.PublicUtils.getClone;
-import static utils.PublicUtils.stackToArray;
+import static com.utils.PublicUtils.getClone;
+import static com.utils.PublicUtils.stackToArray;
 
 /**
  * 迷宫业务层
@@ -176,7 +176,7 @@ public class MazeServiceImpl implements MazeService {
 
         //如果迷宫的文件为空，则设置默认的文件位置
         if (maze.getMazeFilePath() == null) {
-            maze.setMazeFilePath(MazeServiceImpl.class.getResource("/mazeData.maze").getPath());
+            maze.setMazeFilePath(getClass().getResource("/mazeData.maze").getPath());
         }
 
         //调用dao层获取迷宫文件数据

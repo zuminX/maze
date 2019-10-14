@@ -1,6 +1,6 @@
-package utils;
+package com.utils;
 
-import domain.Point;
+import com.domain.Point;
 
 import java.util.List;
 

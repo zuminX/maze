@@ -5,19 +5,13 @@
        xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd">
     <!--配置注解扫描-->
-    <context:component-scan base-package="service"/>
-    <context:component-scan base-package="controller"/>
-    <context:component-scan base-package="dao"/>
-    <context:component-scan base-package="view"/>
-    <context:component-scan base-package="domain"/>
-    <context:component-scan base-package="utils"/>
-    <context:component-scan base-package="aspect"/>
+    <context:component-scan base-package="com"/>
 
     <!--开启注解aop的支持-->
     <aop:aspectj-autoproxy/>
 
     <!--配置四个方向的点-->
-    <bean id="dirPoints" class="utils.DirPoints">
+    <bean id="dirPoints" class="com.utils.DirPoints">
         <property name="dirPoints">
             <list>
                 <ref bean="uponPoint"/>
@@ -29,23 +23,30 @@
     </bean>
 
     <!--往上的点-->
-    <bean id="uponPoint" class="domain.Point">
+    <bean id="uponPoint" class="com.domain.Point">
         <constructor-arg name="i" value="-1"/>
         <constructor-arg name="j" value="0"/>
     </bean>
     <!--往下的点-->
-    <bean id="underPoint" class="domain.Point">
+    <bean id="underPoint" class="com.domain.Point">
         <constructor-arg name="i" value="1"/>
         <constructor-arg name="j" value="0"/>
     </bean>
     <!--往左的点-->
-    <bean id="leftPoint" class="domain.Point">
+    <bean id="leftPoint" class="com.domain.Point">
         <constructor-arg name="i" value="0"/>
         <constructor-arg name="j" value="-1"/>
     </bean>
     <!--往右的点-->
-    <bean id="rightPoint" class="domain.Point">
+    <bean id="rightPoint" class="com.domain.Point">
         <constructor-arg name="i" value="0"/>
         <constructor-arg name="j" value="1"/>
     </bean>
+
+    <!--默认按钮的大小-->
+    <bean id="dimension" class="java.awt.Dimension">
+        <constructor-arg name="width" value="50"/>
+        <constructor-arg name="height" value="50"/>
+    </bean>
+
 </beans>

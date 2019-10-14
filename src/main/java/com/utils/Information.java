@@ -1,4 +1,4 @@
-package utils;
+package com.utils;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
  * 存放迷宫提示信息的类
  */
 @Component
-@PropertySource(value = "classpath:information.properties", encoding = "utf-8")
+@PropertySource(value = "classpath:properties/information.properties", encoding = "utf-8")
 public class Information {
     public static String mazeHelpInformation;
     public static String missingStartAndEndPoints;

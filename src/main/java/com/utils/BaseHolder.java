@@ -1,4 +1,4 @@
-package utils;
+package com.utils;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;

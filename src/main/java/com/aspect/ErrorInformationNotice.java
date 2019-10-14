@@ -1,4 +1,4 @@
-package aspect;
+package com.aspect;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import service.ViewService;
+import com.service.ViewService;
 
 /**
  * 对异常信息进行通知处理的类
@@ -31,7 +31,7 @@ public class ErrorInformationNotice {
      *
      * @return 有异常->true 无异常->false
      */
-    @Around("execution(public * service.impl.*ServiceImpl.*(..))")
+    @Around("execution(public * com.service.impl.*ServiceImpl.*(..))")
     public Object ErrorInformationProcess(ProceedingJoinPoint proceedingJoinPoint) {
         Object returnValue = null;
         try {

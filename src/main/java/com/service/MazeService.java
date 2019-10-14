@@ -1,6 +1,6 @@
-package service;
+package com.service;
 
-import domain.Maze;
+import com.domain.Maze;
 
 /**
  * 迷宫业务层的接口
