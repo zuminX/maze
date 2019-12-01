@@ -2,14 +2,18 @@ package com.dao.impl;
 
 import com.dao.MazeDao;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
-import java.io.BufferedReader;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 /**
- * dao层
- * 读取数据
- * 返回给service层
+ * 迷宫dao层
+ * 读取文件数据
+ * 返回数据给业务层
  */
 @Repository("mazeDao")
 public class MazeDaoImpl implements MazeDao {
@@ -17,25 +21,14 @@ public class MazeDaoImpl implements MazeDao {
     /**
      * 读取迷宫文件
      *
-     * @param br 带缓冲的字符输入流
-     *
+     * @param lines 文件数据的stream流
      * @return 迷宫文件数据
-     *
-     * @throws Exception 异常
      */
-    public int[][] getMazeData(BufferedReader br) throws Exception {
-        String data;
-        ArrayList<int[]> list = new ArrayList<>();
-        //读取迷宫文件的每一行
-        while ((data = br.readLine()) != null) {
-            //以（多个）空格为分隔符分割数据
-            String[] rowDataStr = data.split("\\s+");
-            int[] rowData = new int[rowDataStr.length];
-            for (int i = 0; i < rowData.length; i++) {
-                rowData[i] = Integer.parseInt(rowDataStr[i]);
-            }
-            list.add(rowData);
-        }
+    public int[][] getMazeData(Stream<String> lines) {
+        //将流转化为List数组
+        final List<int[]> list = lines.filter(s -> !StringUtils.isEmpty(s))
+                .map(line -> Arrays.stream(line.split("\\s+")).mapToInt(Integer::valueOf).toArray())
+                .collect(toList());
 
         //将List数组转化为一个二维数组返回
         int[][] mazeData = new int[list.size()][];

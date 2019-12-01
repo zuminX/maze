@@ -9,15 +9,15 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * 视图业务层的接口
- * 接收控制层controller的数据
+ * 处理迷宫页面的业务层的接口
+ * 接收控制层的数据
+ * 返回数据给控制层
  */
-public interface ViewService {
+public interface MazeViewService {
     /**
      * 创建迷宫按钮组
      *
      * @param maze 迷宫对象
-     *
      * @return 迷宫按钮组
      */
     MazeViewButtons newMazeViewButtons(Maze maze);

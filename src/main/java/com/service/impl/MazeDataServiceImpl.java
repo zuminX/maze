@@ -3,18 +3,15 @@ package com.service.impl;
 import com.dao.MazeDao;
 import com.domain.Maze;
 import com.domain.Point;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import com.service.MazeService;
+import com.service.MazeDataService;
 import com.utils.BaseHolder;
 import com.utils.DirPoints;
 import com.utils.Information;
+import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -25,15 +22,20 @@ import static com.utils.PublicUtils.stackToArray;
 
 /**
  * 迷宫业务层
- * 接收控制层controller的数据
+ * 接收控制层的数据
  * 调用dao层获得数据
- * 返回数据给controller层
+ * 返回数据给控制层
  */
 @Service("mazeService")
-@SuppressWarnings("all")
-public class MazeServiceImpl implements MazeService {
-    @Autowired
-    private MazeDao mazeDao;
+public class MazeDataServiceImpl implements MazeDataService {
+    private final MazeDao mazeDao;
+
+    /**
+     * 注入成员变量
+     */
+    public MazeDataServiceImpl(MazeDao mazeDao) {
+        this.mazeDao = mazeDao;
+    }
 
     /**
      * 对进行广度优先搜索后的迷宫数据进行逆向处理
@@ -41,11 +43,10 @@ public class MazeServiceImpl implements MazeService {
      * 为迷宫对象增加组成最短路径所有点的数据
      *
      * @param maze 迷宫对象
-     *
-     * @return 有异常->true 无异常->false
+     * @return 有异常返回null, 无异常返回false
      */
     @Override
-    public boolean getPath(Maze maze) {
+    public Boolean getPath(Maze maze) {
         final Point start = maze.getStart();
         final Point end = maze.getEnd();
         //确保存在起点和终点
@@ -167,11 +168,10 @@ public class MazeServiceImpl implements MazeService {
      * 为迷宫对象增加迷宫文件原始数据
      *
      * @param maze 迷宫对象
-     *
-     * @return 有异常->true 无异常->false
+     * @return 有异常返回null, 无异常返回false
      */
     @Override
-    public boolean getMazeOriginalData(Maze maze) {
+    public Boolean getMazeOriginalData(Maze maze) {
         int[][] mazeOriginalData;
 
         //如果迷宫的文件为空，则设置默认的文件位置
@@ -180,10 +180,8 @@ public class MazeServiceImpl implements MazeService {
         }
 
         //调用dao层获取迷宫文件数据
-        try (var is = new FileInputStream(new File(maze.getMazeFilePath()));
-             var isr = new InputStreamReader(is, StandardCharsets.UTF_8);
-             var br = new BufferedReader(isr)) {
-            mazeOriginalData = mazeDao.getMazeData(br);
+        try (var lines = Files.lines(new File(maze.getMazeFilePath()).toPath(), StandardCharsets.UTF_8)) {
+            mazeOriginalData = mazeDao.getMazeData(lines);
         } catch (Exception e) {
             throw new RuntimeException(Information.readingMazeFileError);
         }
@@ -228,8 +226,7 @@ public class MazeServiceImpl implements MazeService {
      *
      * @param point 点
      * @param grid  迷宫数据
-     *
-     * @return 成功->迷宫数据对应位置的值；失败->null
+     * @return 成功返回迷宫数据对应位置的值，失败返回null
      */
     private Integer getPointValueByMaze(Point point, int[][] grid) {
         if (point.getI() < 0 || point.getI() >= grid.length) {

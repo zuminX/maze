@@ -3,16 +3,18 @@ package com.view;
 import com.controller.MazeController;
 import com.domain.Maze;
 import com.domain.MazeViewButtons;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import com.utils.BaseHolder;
 import com.utils.SkipLoad;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.Arrays;
+import java.util.function.Consumer;
 
 /**
  * 视图层，进行程序的显示和与用户交互的界面
@@ -92,7 +94,7 @@ public class MainWindow extends JFrame {
      */
     private void loadingMazeDataActionPerformed() {
         if (!cleanData()) {
-            if (mazeController.getMazeOriginalData(maze)) {
+            if (mazeController.getMazeOriginalData(maze) == null) {
                 return;
             }
             //迷宫面板初始化
@@ -126,7 +128,7 @@ public class MainWindow extends JFrame {
      * 调用viewController对象进行动态路径显示
      */
     private void findMazeMinPathActionPerformed() {
-        if (mazeController.getPathData(maze)) {
+        if (mazeController.getPathData(maze) == null) {
             return;
         }
         mazeController.displayPathAnimation(mazeViewButtons, maze.getMazePathPoints());
@@ -148,42 +150,36 @@ public class MainWindow extends JFrame {
      * 添加迷宫按钮组到迷宫面板中
      */
     private void addButtonsToPanel() {
-        JButton[][] buttons = mazeViewButtons.getButtons();
-        for (JButton[] button : buttons) {
-            for (JButton b : button) {
-                mazePanel.add(b);
-            }
-        }
+        forEachAllButtons(button -> mazePanel.add(button));
     }
 
     /**
      * 为迷宫按钮组增加监听器
      */
     private void addButtonsActionListener() {
-        JButton[][] buttons = mazeViewButtons.getButtons();
-        for (JButton[] button : buttons) {
-            for (JButton b : button) {
-                b.addActionListener(buttonActionListener);
-            }
-        }
+        forEachAllButtons(button -> button.addActionListener(buttonActionListener));
     }
 
     /**
      * 移除迷宫按钮组的监听器
      */
     private void removeButtonsListener() {
-        JButton[][] buttons = mazeViewButtons.getButtons();
-        for (JButton[] button : buttons) {
-            for (JButton b : button) {
-                b.removeActionListener(buttonActionListener);
-            }
-        }
+        forEachAllButtons(button -> button.removeActionListener(buttonActionListener));
+    }
+
+    /**
+     * 遍历所有按钮
+     *
+     * @param action 消费者函数
+     */
+    private void forEachAllButtons(Consumer<? super JButton> action) {
+        Arrays.stream(mazeViewButtons.getButtons()).flatMap(Arrays::stream).forEach(action);
     }
 
     /**
      * 清理迷宫对象、迷宫按钮组对象的数据
      *
-     * @return true->可以跳过加载 false->不可跳过加载
+     * @return 可以跳过加载返回true，否则返回false
      */
     private boolean cleanData() {
         //获取当前迷宫文件的位置和修改时间

@@ -4,63 +4,60 @@ import com.controller.MazeController;
 import com.domain.Maze;
 import com.domain.MazeViewButtons;
 import com.domain.Point;
+import com.service.MazeDataService;
+import com.service.MazeViewService;
+import com.view.MainWindow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import com.service.MazeService;
-import com.service.ViewService;
-import com.view.MainWindow;
 
 import javax.swing.*;
 import java.awt.*;
 
 /**
  * 控制层
- * 接收视图层的数据,数据传递给service层
- * 接受service返回的数据并返回给视图层
+ * 接收视图层的数据,数据传递给业务层
+ * 接受业务层返回的数据并返回给视图层
  */
 @Controller("mazeController")
 @SuppressWarnings("all")
 public class MazeControllerImpl implements MazeController {
     @Autowired
-    private ViewService viewService;
+    private MazeViewService mazeViewService;
 
     @Autowired
-    private MazeService mazeService;
+    private MazeDataService mazeDataService;
 
     /**
      * 获得迷宫的路径数据
      *
      * @param maze 迷宫对象
-     *
-     * @return 有异常->true 无异常->false
+     * @return 有异常返回null,无异常返回false
      */
     @Override
-    public boolean getPathData(Maze maze) {
-        return mazeService.getPath(maze);
+    public Boolean getPathData(Maze maze) {
+        return mazeDataService.getPath(maze);
     }
 
     /**
      * 获得迷宫的原始数据
      *
      * @param maze 迷宫对象
-     *
-     * @return 有异常->true 无异常->false
+     * @return 有异常返回null,无异常返回false
      */
     @Override
-    public boolean getMazeOriginalData(Maze maze) {
-        return mazeService.getMazeOriginalData(maze);
+    public Boolean getMazeOriginalData(Maze maze) {
+        return mazeDataService.getMazeOriginalData(maze);
     }
 
     /**
      * 创建迷宫按钮组
      *
      * @param maze 迷宫对象
-     *
      * @return 迷宫按钮组
      */
     @Override
     public MazeViewButtons newMazeViewButtons(Maze maze) {
-        return viewService.newMazeViewButtons(maze);
+        return mazeViewService.newMazeViewButtons(maze);
     }
 
     /**
@@ -69,11 +66,10 @@ public class MazeControllerImpl implements MazeController {
      * @param mazeViewButtons 迷宫按钮组
      * @param maze            迷宫对象
      * @param source          按钮源
-     *
      */
     @Override
     public void changeStartAndEndPoint(MazeViewButtons mazeViewButtons, Maze maze, Object source) {
-        viewService.changeStartAndEndPoint(mazeViewButtons, maze, (JButton) source);
+        mazeViewService.changeStartAndEndPoint(mazeViewButtons, maze, (JButton) source);
     }
 
     /**
@@ -84,7 +80,7 @@ public class MazeControllerImpl implements MazeController {
      */
     @Override
     public void displayPathAnimation(MazeViewButtons mazeViewButtons, Point[] mazePathPoints) {
-        viewService.displayPathAnimation(mazeViewButtons, mazePathPoints);
+        mazeViewService.displayPathAnimation(mazeViewButtons, mazePathPoints);
     }
 
     /**
@@ -95,7 +91,7 @@ public class MazeControllerImpl implements MazeController {
      */
     @Override
     public void removePathAnimation(MazeViewButtons mazeViewButtons, Point[] mazePathPoints) {
-        viewService.removePathAnimation(mazeViewButtons, mazePathPoints);
+        mazeViewService.removePathAnimation(mazeViewButtons, mazePathPoints);
     }
 
     /**
@@ -105,7 +101,7 @@ public class MazeControllerImpl implements MazeController {
      */
     @Override
     public void changeFileLocation(Maze maze) {
-        viewService.changeFileLocation(maze);
+        mazeViewService.changeFileLocation(maze);
     }
 
     /**
@@ -113,18 +109,17 @@ public class MazeControllerImpl implements MazeController {
      */
     @Override
     public void showHelpInformation() {
-        viewService.showHelpInformation();
+        mazeViewService.showHelpInformation();
     }
 
     /**
      * 打开迷宫文件
      *
      * @param filePath 文件路径
-     *
      */
     @Override
     public void openMazeFile(String filePath) {
-        viewService.openMazeFile(filePath);
+        mazeViewService.openMazeFile(filePath);
     }
 
     /**
@@ -134,7 +129,7 @@ public class MazeControllerImpl implements MazeController {
      */
     @Override
     public void loadButtonsIcon(MazeViewButtons mazeViewButtons) {
-        viewService.loadButtonsIcon(mazeViewButtons);
+        mazeViewService.loadButtonsIcon(mazeViewButtons);
     }
 
     /**
@@ -146,6 +141,6 @@ public class MazeControllerImpl implements MazeController {
      */
     @Override
     public void setWindowSize(MainWindow mainWindow, Maze maze, Dimension screenSize) {
-        viewService.setWindowSize(mainWindow, maze, screenSize);
+        mazeViewService.setWindowSize(mainWindow, maze, screenSize);
     }
 }

@@ -1,10 +1,10 @@
 package com.app;
 
+import com.utils.BaseHolder;
+import com.view.MainWindow;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import com.utils.BaseHolder;
-import com.view.MainWindow;
 
 import javax.swing.*;
 

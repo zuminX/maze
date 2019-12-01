@@ -22,7 +22,6 @@ public class BaseHolder implements ApplicationContextAware {
      *
      * @param beanName spring中bean的id
      * @param <T>      泛型
-     *
      * @return bean对象
      */
     public static <T> T getBean(String beanName) {
@@ -35,7 +34,6 @@ public class BaseHolder implements ApplicationContextAware {
      * @param beanName spring中bean的id
      * @param type     bean的class对象
      * @param <T>      泛型
-     *
      * @return bean对象
      */
     public static <T> T getBean(String beanName, Class<T> type) {
@@ -46,7 +44,6 @@ public class BaseHolder implements ApplicationContextAware {
      * 设置核心容器
      *
      * @param applicationContext 核心容器
-     *
      * @throws BeansException bean异常
      */
     @Override

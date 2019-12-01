@@ -1,5 +1,7 @@
 package com.domain;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -8,6 +10,8 @@ import org.springframework.stereotype.Component;
  */
 @Component()
 @Scope("prototype")
+@Getter
+@Setter
 public class Maze {
     /**
      * 迷宫原始数据
@@ -64,74 +68,10 @@ public class Maze {
      *
      * @param row    行
      * @param column 列
-     *
-     * @return 是墙->true 不是墙->false
+     * @return 是墙返回true，不是墙返回false
      */
     public boolean isWall(int row, int column) {
         return mazeOriginalData[row][column] == -1;
     }
 
-    public int[][] getMazeOriginalData() {
-        return mazeOriginalData;
-    }
-
-    public void setMazeOriginalData(int[][] mazeOriginalData) {
-        this.mazeOriginalData = mazeOriginalData;
-    }
-
-    public int[][] getMazeStepData() {
-        return mazeStepData;
-    }
-
-    public void setMazeStepData(int[][] mazeStepData) {
-        this.mazeStepData = mazeStepData;
-    }
-
-    public Point[] getMazePathPoints() {
-        return mazePathPoints;
-    }
-
-    public void setMazePathPoints(Point[] mazePathPoints) {
-        this.mazePathPoints = mazePathPoints;
-    }
-
-    public String getMazeFilePath() {
-        return mazeFilePath;
-    }
-
-    public void setMazeFilePath(String mazeFilePath) {
-        this.mazeFilePath = mazeFilePath;
-    }
-
-    public int getMazeRow() {
-        return mazeRow;
-    }
-
-    public void setMazeRow(int mazeRow) {
-        this.mazeRow = mazeRow;
-    }
-
-    public int getMazeColumn() {
-        return mazeColumn;
-    }
-
-    public void setMazeColumn(int mazeColumn) {
-        this.mazeColumn = mazeColumn;
-    }
-
-    public Point getStart() {
-        return start;
-    }
-
-    public void setStart(Point start) {
-        this.start = start;
-    }
-
-    public Point getEnd() {
-        return end;
-    }
-
-    public void setEnd(Point end) {
-        this.end = end;
-    }
 }

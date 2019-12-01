@@ -3,14 +3,13 @@ package com.service.impl;
 import com.domain.Maze;
 import com.domain.MazeViewButtons;
 import com.domain.Point;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Service;
-import com.service.ViewService;
+import com.service.MazeViewService;
 import com.utils.BaseHolder;
 import com.utils.Information;
 import com.view.MainWindow;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -19,31 +18,35 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 /**
- * 视图业务层
- * 接收控制层controller的数据
- * 返回数据给controller层
+ * 处理迷宫页面的业务层
+ * 接收控制层的数据
+ * 返回数据给控制层
  */
 @Service("viewService")
 @PropertySource(value = "classpath:properties/mazeConfig.properties", encoding = "utf-8")
-@SuppressWarnings("all")
-public class ViewServiceImpl implements ViewService {
+public class MazeViewServiceImpl implements MazeViewService {
+    private final Dimension dimension;
     /**
      * 文件的后缀必须为.maze
      */
     @Value("${mazePattern}")
     private String pattern;
 
-    @Autowired
-    private Dimension dimension;
+    /**
+     * 注入成员变量
+     */
+    public MazeViewServiceImpl(Dimension dimension) {
+        this.dimension = dimension;
+    }
 
     /**
      * 创建迷宫按钮组
      *
      * @param maze 迷宫对象
-     *
      * @return 迷宫按钮组
      */
     @Override
@@ -56,7 +59,7 @@ public class ViewServiceImpl implements ViewService {
         MazeViewButtons mazeViewButtons = BaseHolder.getBean("mazeViewButtons", MazeViewButtons.class);
         JButton[][] buttons = new JButton[maze.getMazeRow()][];
 
-        //创建一个二维数据的点
+        //创建一个二维数据的点集
         for (int i = 0; i < buttons.length; i++) {
             buttons[i] = new JButton[maze.getMazeColumn()];
             for (int j = 0; j < buttons[i].length; j++) {
@@ -85,7 +88,6 @@ public class ViewServiceImpl implements ViewService {
      * @param mazeViewButtons 迷宫按钮组
      * @param maze            迷宫对象
      * @param button          按钮
-     *
      */
     @Override
     public void changeStartAndEndPoint(MazeViewButtons mazeViewButtons, Maze maze, JButton button) {
@@ -102,19 +104,19 @@ public class ViewServiceImpl implements ViewService {
         if (point.equals(start)) {
             //取消起点
             maze.setStart(null);
-            button.setBackground(Color.white);
+            button.setBackground(Color.WHITE);
         } else if (point.equals(end)) {
             //取消终点
             maze.setEnd(null);
-            button.setBackground(Color.white);
+            button.setBackground(Color.WHITE);
         } else if (start == null) {
             //设置起点
             maze.setStart(point);
-            button.setBackground(Color.blue);
+            button.setBackground(Color.BLUE);
         } else if (end == null) {
             //设置终点
             maze.setEnd(point);
-            button.setBackground(Color.blue);
+            button.setBackground(Color.BLUE);
         } else {
             //若为其他情况，则抛出异常
             throw new RuntimeException(Information.StartAndEndPointsOnlyOne);
@@ -129,20 +131,8 @@ public class ViewServiceImpl implements ViewService {
      */
     @Override
     public void displayPathAnimation(MazeViewButtons mazeViewButtons, final Point[] mazePathPoints) {
-        final JButton[][] buttons = mazeViewButtons.getButtons();
-
-        new Thread(() -> {
-            //每隔0.1s显示路径上的一个点
-            for (Point point : mazePathPoints) {
-                buttons[point.getI()][point.getJ()].setBackground(Color.green);
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    //异常中断时，抛出异常
-                    throw new RuntimeException(Information.showPathError);
-                }
-            }
-        }).start();
+        //每隔0.1s显示路径上的一个点
+        setMazeViewButtonsColor(mazeViewButtons.getButtons(), Color.GREEN, 100, mazePathPoints);
     }
 
     /**
@@ -153,10 +143,29 @@ public class ViewServiceImpl implements ViewService {
      */
     @Override
     public void removePathAnimation(MazeViewButtons mazeViewButtons, final Point[] mazePathPoints) {
-        final JButton[][] buttons = mazeViewButtons.getButtons();
-        for (Point point : mazePathPoints) {
-            buttons[point.getI()][point.getJ()].setBackground(Color.white);
-        }
+        setMazeViewButtonsColor(mazeViewButtons.getButtons(), Color.WHITE, 0, mazePathPoints);
+    }
+
+    /**
+     * 设置迷宫按钮的颜色
+     *
+     * @param buttons        按钮组
+     * @param delay          每次显示的延迟时间
+     * @param color          颜色
+     * @param mazePathPoints 组成迷宫路径的点
+     */
+    private void setMazeViewButtonsColor(JButton[][] buttons, Color color, long delay, Point... mazePathPoints) {
+        new Thread(() -> {
+            Arrays.stream(mazePathPoints).forEach(point -> {
+                buttons[point.getI()][point.getJ()].setBackground(color);
+                try {
+                    Thread.sleep(delay);
+                } catch (InterruptedException e) {
+                    //异常中断时，抛出异常
+                    throw new RuntimeException(Information.showPathError);
+                }
+            });
+        }).start();
     }
 
     /**
@@ -201,7 +210,6 @@ public class ViewServiceImpl implements ViewService {
      * 打开迷宫文件
      *
      * @param filePath 文件路径
-     *
      */
     @Override
     public void openMazeFile(String filePath) {
@@ -230,15 +238,9 @@ public class ViewServiceImpl implements ViewService {
         }
 
         //根据按钮的大小设置图片的大小
-        final Image wallImage = image.getScaledInstance(buttons[0][0].getWidth(), buttons[0][0].getHeight(), Image.SCALE_DEFAULT);
-        for (JButton[] button : buttons) {
-            for (JButton b : button) {
-                //为迷宫墙添加图片
-                if (!b.isEnabled()) {
-                    b.setIcon(new ImageIcon(wallImage));
-                }
-            }
-        }
+        final ImageIcon imageIcon = new ImageIcon(image.getScaledInstance(buttons[0][0].getWidth(), buttons[0][0].getHeight(), Image.SCALE_DEFAULT));
+        //为迷宫墙添加图片
+        Arrays.stream(buttons).flatMap(Arrays::stream).filter(button -> !button.isEnabled()).forEach(button -> button.setIcon(imageIcon));
     }
 
     /**

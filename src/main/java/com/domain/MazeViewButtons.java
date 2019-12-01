@@ -1,5 +1,7 @@
 package com.domain;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -10,25 +12,18 @@ import javax.swing.*;
  */
 @Component
 @Scope("prototype")
+@Getter
+@Setter
 public class MazeViewButtons {
     /**
      * 二维按钮
      */
     private JButton[][] buttons;
 
-    public JButton[][] getButtons() {
-        return buttons;
-    }
-
-    public void setButtons(JButton[][] buttons) {
-        this.buttons = buttons;
-    }
-
     /**
      * 查找指定按钮在按钮组的位置
      *
      * @param button 按钮
-     *
      * @return 按钮的位置
      */
     public Point findLocationFromButtons(JButton button) {

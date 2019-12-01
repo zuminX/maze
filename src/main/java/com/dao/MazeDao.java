@@ -1,20 +1,18 @@
 package com.dao;
 
-import java.io.BufferedReader;
+import java.util.stream.Stream;
 
 /**
- * dao层的接口
- * 读取数据
+ * 迷宫dao层的接口
+ * 读取文件数据
+ * 返回数据给业务层
  */
 public interface MazeDao {
     /**
      * 读取迷宫文件
      *
-     * @param br 带缓冲的字符输入流
-     *
+     * @param lines 文件数据的stream流
      * @return 迷宫文件数据
-     *
-     * @throws Exception 异常
      */
-    int[][] getMazeData(BufferedReader br) throws Exception;
+    int[][] getMazeData(Stream<String> lines) throws Exception;
 }

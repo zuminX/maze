@@ -17,7 +17,6 @@ public final class PublicUtils {
      * @param type 一维数组的class对象
      * @param src  源数据
      * @param <T>  泛型
-     *
      * @return 深拷贝的二维数组
      */
     public static <T> T[][] getClone(Class<T[]> type, T[][] src) {
@@ -40,7 +39,6 @@ public final class PublicUtils {
      * @param type 数组中元素的class对象
      * @param src  源数据
      * @param <T>  泛型
-     *
      * @return 深拷贝的一维数组
      */
     public static <T> T[] getClone(Class<T> type, T[] src) {
@@ -60,7 +58,6 @@ public final class PublicUtils {
      * @param type 数组中元素的class对象
      * @param src  源数据
      * @param <T>  泛型
-     *
      * @return 数组
      */
     public static <T> T[] stackToArray(Class<T> type, Stack<T> src) {

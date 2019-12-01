@@ -1,5 +1,6 @@
 package com.aspect;
 
+import com.service.MazeViewService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -7,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import com.service.ViewService;
 
 /**
  * 对异常信息进行通知处理的类
@@ -22,14 +22,13 @@ public class ErrorInformationNotice {
     private static final Logger LOGGER = LoggerFactory.getLogger(ErrorInformationNotice.class);
 
     @Autowired
-    private ViewService viewService;
+    private MazeViewService mazeViewService;
 
     /**
      * 对供外界访问的service层方法进行代理增强
      *
      * @param proceedingJoinPoint 连接点对象
-     *
-     * @return 有异常->true 无异常->false
+     * @return 有异常返回null，无异常返回执行方法的返回值
      */
     @Around("execution(public * com.service.impl.*ServiceImpl.*(..))")
     public Object ErrorInformationProcess(ProceedingJoinPoint proceedingJoinPoint) {
@@ -42,8 +41,7 @@ public class ErrorInformationNotice {
         } catch (Throwable throwable) {
             //捕捉异常，记录异常，显示异常信息给用户
             LOGGER.error("", throwable);
-            viewService.showErrorInformation(throwable.getMessage());
-            return true;
+            mazeViewService.showErrorInformation(throwable.getMessage());
         }
         return returnValue;
     }

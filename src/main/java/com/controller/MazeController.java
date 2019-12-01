@@ -10,8 +10,8 @@ import java.awt.*;
 /**
  * 控制层的接口
  * <p>
- * 接收视图层的数据,数据传递给service层
- * 接受service返回的数据并返回给视图层
+ * 接收视图层的数据,数据传递给业务层
+ * 接受业务层返回的数据并返回给视图层
  */
 public interface MazeController {
 
@@ -19,25 +19,22 @@ public interface MazeController {
      * 获得迷宫的路径数据
      *
      * @param maze 迷宫对象
-     *
-     * @return 有异常->true 无异常->false
+     * @return 有异常返回null，无异常返回false
      */
-    boolean getPathData(Maze maze);
+    Boolean getPathData(Maze maze);
 
     /**
      * 获得迷宫的原始数据
      *
      * @param maze 迷宫对象
-     *
-     * @return 有异常->true 无异常->false
+     * @return 有异常返回null，无异常返回false
      */
-    boolean getMazeOriginalData(Maze maze);
+    Boolean getMazeOriginalData(Maze maze);
 
     /**
      * 创建迷宫按钮组
      *
      * @param maze 迷宫对象
-     *
      * @return 迷宫按钮组
      */
     MazeViewButtons newMazeViewButtons(Maze maze);
